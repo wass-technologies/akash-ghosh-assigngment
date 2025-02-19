@@ -46,7 +46,7 @@ export class UserController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      const result = await this.userService.remove(+id); // Convert string id to number
+      const result = await this.userService.remove(+id); 
       if (!result) {
         return { message: 'User not found or already deleted' };
       }
