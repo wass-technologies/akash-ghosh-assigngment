@@ -1,11 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-// Enum for user roles
-export enum UserRole {
-  ADMIN = 'admin',
-  RESTAURANT = 'restaurant',
-  CUSTOMER = 'customer',
-}
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { UserRole } from '../../constants/enums';
+import { Order } from 'src/order/entities/order.entity';
+import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
+import { Cart } from 'src/cart/entities/cart.entity';
 
 @Entity()
 export class User {
@@ -22,9 +19,20 @@ export class User {
   password: string;  // User's password
 
   @Column({
-    type: 'enum',  // Specify that this column will be an enum type
-    enum: UserRole,  // Referencing the UserRole enum
-    default: UserRole.CUSTOMER,  // Default role will be customer
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.CUSTOMER,
   })
-  role: UserRole;  // User's role based on the UserRole enum
+  role: UserRole;
+
+@OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];  
+
+
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.owner)
+  restaurants: Restaurant[]; 
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+carts: Cart[];
 }
+

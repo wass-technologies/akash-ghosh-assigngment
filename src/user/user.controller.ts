@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post,Patch, Body, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -42,17 +44,14 @@ export class UserController {
     }
   }
 
+  @Patch(':id')
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+    return await this.userService.update(Number(id), updateUserDto);
+  }
   // Delete a user by ID
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    try {
-      const result = await this.userService.remove(+id); 
-      if (!result) {
-        return { message: 'User not found or already deleted' };
-      }
-      return { message: 'User deleted successfully' };
-    } catch (error) {
-      return { message: 'Error deleting user', error };
-    }
+  async remove(@Param('id') id: number): Promise<{ message: string }> {
+    return await this.userService.remove(id);
   }
+  
 }

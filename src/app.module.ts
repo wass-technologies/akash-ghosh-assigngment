@@ -23,7 +23,7 @@ import { Cart } from './cart/entities/cart.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Restaurant, Menu, Order, Cart],
+     
       autoLoadEntities: true,
       synchronize: false,
     }),
