@@ -6,11 +6,6 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
-import { User } from './user/entities/user.entity';
-import { Restaurant } from './restaurant/entities/restaurant.entity';
-import { Menu } from './menu/entities/menu.entity';
-import { Order } from './order/entities/order.entity';
-import { Cart } from './cart/entities/cart.entity';
 
 
 @Module({
@@ -23,9 +18,8 @@ import { Cart } from './cart/entities/cart.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-     
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
     UserModule,
     RestaurantModule,

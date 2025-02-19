@@ -7,7 +7,7 @@ export class RestaurantController {
 
   @Get()
   getAllRestaurants() {
-    return this.restaurantService.findAll();
+    return this.restaurantService.findAllRestaurants();
   }
 
   @Patch(':id/activate')
