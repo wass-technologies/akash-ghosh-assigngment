@@ -8,7 +8,7 @@ export class Menu {
   id: number;
 
   @Column()
-  name: string;
+  item_name: string;
 
   @Column('decimal')
   price: number;

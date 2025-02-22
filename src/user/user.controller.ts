@@ -1,25 +1,27 @@
-import { Controller, Get, Post,Patch, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // Create a new user
+  // Public: Create a new user (Registration)
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       const newUser = await this.userService.create(createUserDto);
-      return newUser; // Return created user or status message
+      return newUser;
     } catch (error) {
       return { message: 'Error creating user', error };
     }
   }
 
-  // Get all users
+  // Protected: Get all users (Requires authentication)
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll() {
     try {
@@ -30,11 +32,19 @@ export class UserController {
     }
   }
 
-  // Get a single user by ID
+  // Protected: Get the current logged-in user's profile
+  @UseGuards(AuthGuard('jwt'))
+  @Get('profile')
+  async getProfile(@Request() req) {
+    return req.user; // JWT payload will be available in req.user
+  }
+
+  // Protected: Get a single user by ID
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      const user = await this.userService.findOne(+id); // Convert string id to number
+      const user = await this.userService.findOne(+id);
       if (!user) {
         return { message: 'User not found' };
       }
@@ -44,14 +54,17 @@ export class UserController {
     }
   }
 
+  // Protected: Update a user
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return await this.userService.update(Number(id), updateUserDto);
   }
-  // Delete a user by ID
+
+  // Protected: Delete a user
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<{ message: string }> {
     return await this.userService.remove(id);
   }
-  
 }

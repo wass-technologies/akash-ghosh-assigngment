@@ -12,6 +12,12 @@ export class UserService {
     private readonly userRepository: Repository<User>, // Injects the User repository to interact with the database
   ) {}
 
+  async findByEmail(email: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    return user || undefined;
+  }
+  
+
   // Create a new user
   async create(createUserDto: CreateUserDto): Promise<User> {
     const newUser = this.userRepository.create(createUserDto);

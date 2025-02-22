@@ -8,11 +8,12 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.orders)
-  customer: User;
+  
+@ManyToOne(() => User, (user) => user.orders)
+customer: User;
 
-  @ManyToOne(() => Restaurant, (restaurant) => restaurant.orders)
-  restaurant: Restaurant;
+@ManyToOne(() => Restaurant, (restaurant) => restaurant.orders)
+restaurant: Restaurant;
 
   @Column()
   totalPrice: number;
@@ -23,4 +24,5 @@ export class Order {
     default: OrderStatus.PENDING,
   })
   status: OrderStatus;
+
 }

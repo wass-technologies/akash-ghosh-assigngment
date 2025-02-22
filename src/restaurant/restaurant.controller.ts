@@ -9,6 +9,14 @@ export class RestaurantController {
   getAllRestaurants() {
     return this.restaurantService.findAllRestaurants();
   }
+  @Post(':restaurantId/menu')
+createMenu(
+  @Param('restaurantId') restaurantId: number,
+  @Body() menuData: any,
+) {
+  return this.restaurantService.createMenu(restaurantId, menuData);
+}
+
 
   @Patch(':id/activate')
   activateRestaurant(@Param('id') id: number) {

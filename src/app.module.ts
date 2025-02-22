@@ -6,11 +6,12 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
+import { AuthModule } from "./Auth/auth.module";
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
@@ -19,13 +20,14 @@ import { CartModule } from './cart/cart.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     UserModule,
     RestaurantModule,
     MenuModule,
     OrderModule,
     CartModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
