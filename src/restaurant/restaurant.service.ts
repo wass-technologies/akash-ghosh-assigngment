@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
@@ -19,6 +19,9 @@ export class RestaurantService {
     private readonly menuRepo: Repository<Menu>,
   ) {}
 
+
+  
+  
    
    async findAllRestaurants() {
     return await this.userRepository.find({

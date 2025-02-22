@@ -18,8 +18,7 @@ export class Restaurant {
   @Column()
   password: string;
 
-  @Column()
-  address: string;
+
 
   @Column({
     type: 'enum',
