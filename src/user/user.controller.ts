@@ -9,18 +9,8 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // Public: Create a new user (Registration)
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const newUser = await this.userService.create(createUserDto);
-      return newUser;
-    } catch (error) {
-      return { message: 'Error creating user', error };
-    }
-  }
-
-  // Protected: Get all users (Requires authentication)
+ 
+  //  Get all users (Requires authentication)
   @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll() {
@@ -39,7 +29,7 @@ export class UserController {
     return req.user; // JWT payload will be available in req.user
   }
 
-  // Protected: Get a single user by ID
+  // Get a single user by ID
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id') id: string) {
@@ -54,14 +44,14 @@ export class UserController {
     }
   }
 
-  // Protected: Update a user
+  //  Update a user
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return await this.userService.update(Number(id), updateUserDto);
   }
 
-  // Protected: Delete a user
+  //Delete a user
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<{ message: string }> {

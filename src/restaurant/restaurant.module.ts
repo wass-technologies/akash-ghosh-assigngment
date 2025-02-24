@@ -5,9 +5,10 @@ import { RestaurantController } from './restaurant.controller';
 import { RestaurantService } from './restaurant.service';
 import { User } from 'src/user/entities/user.entity';
 import { Menu } from 'src/menu/entities/menu.entity';
+import { MenuModule } from 'src/menu/menu.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Restaurant,User,Menu])],
+  imports: [TypeOrmModule.forFeature([Restaurant, User])],
   controllers: [RestaurantController],
   providers: [RestaurantService],
   exports: [RestaurantService],

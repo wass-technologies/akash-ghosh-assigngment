@@ -4,7 +4,10 @@ import { Repository } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
 import { UserRole } from '../constants/enums';
 import { User } from '../user/entities/user.entity';
-import { Menu } from '../menu/entities/menu.entity';
+import { RestaurantStatus } from '../constants/enums';
+
+
+import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -15,47 +18,55 @@ export class RestaurantService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
-    @InjectRepository(Menu)  // Inject Menu Repository
-    private readonly menuRepo: Repository<Menu>,
+    
   ) {}
 
-
-  
-  
-   
-   async findAllRestaurants() {
-    return await this.userRepository.find({
-      where: { role: UserRole.RESTAURANT },
-    });
+  // crete a new restaurant
+  async create(restaurantData: Partial<Restaurant>) {
+    const restaurant = this.restaurantRepo.create(restaurantData);
+    return await this.restaurantRepo.save(restaurant);
   }
-  async createMenu(restaurantId: number, menuData: any) {
-    const restaurant = await this.restaurantRepo.findOne({ where: { id: restaurantId } });
-  
+  // get the status of the restaurant
+  async getRestaurantStatus(id: number) {
+    const restaurant = await this.restaurantRepo.findOne({ where: { id } });
     if (!restaurant) {
-      throw new NotFoundException('Restaurant not found');
+      throw new Error('Restaurant not found');
     }
-  
-    const menu = this.menuRepo.create({
-      ...menuData,
-      restaurant,
-    });
-    return await this.menuRepo.save(menu);
-  }
-  
 
-  async activate(id: number) {
-    const restaurant = await this.restaurantRepo.findOne({ where: { id } });
-    if (!restaurant) throw new NotFoundException('Restaurant not found');
-
-    restaurant.isActive = true;
-    return await this.restaurantRepo.save(restaurant);
+    return {
+      id: restaurant.id,
+      name: restaurant.name,
+      isActive: restaurant.isActive,
+      message: restaurant.isActive ? 'Restaurant is active' : 'Restaurant is inactive',
+    };
   }
 
-  async deactivate(id: number) {
+  async getActiveRestaurants() {
+    return await this.restaurantRepo.find({ where: { isActive: true } });
+  }
+// set active or inactive status of the restaurant
+  async setRestaurantStatus(id: number, isActive: boolean) {
     const restaurant = await this.restaurantRepo.findOne({ where: { id } });
-    if (!restaurant) throw new NotFoundException('Restaurant not found');
+    if (!restaurant) {
+      throw new Error('Restaurant not found');
+    }
 
-    restaurant.isActive = false;
-    return await this.restaurantRepo.save(restaurant);
+    const newStatus = isActive ? RestaurantStatus.Active : RestaurantStatus.Inactive;
+
+  await this.restaurantRepo.update(id, { 
+    isActive: isActive, 
+    status: newStatus // Ensure this field exists in your entity
+  });
+
+    return {
+      message: isActive ? 'Restaurant activated successfully' : 'Restaurant deactivated successfully',
+      restaurantId: restaurant.id,
+      status: newStatus
+    
+    };
+  }
+
+  async findAllRestaurants() {
+    return await this.restaurantRepo.find();
   }
 }

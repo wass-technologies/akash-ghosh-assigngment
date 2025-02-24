@@ -18,8 +18,6 @@ export class Restaurant {
   @Column()
   password: string;
 
-
-
   @Column({
     type: 'enum',
     enum: RestaurantStatus,
@@ -32,8 +30,8 @@ export class Restaurant {
 
   @OneToMany(() => Order, (order) => order.restaurant)
   orders: Order[];
-
-  @ManyToOne(() => User, (user) => user.restaurants)
+  
+  @ManyToOne(() => User, (user) => user.restaurants, { nullable: false })
   owner: User;
   @OneToMany(() => Menu, (menu) => menu.restaurant)
 menus: Menu[];

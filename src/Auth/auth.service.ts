@@ -3,24 +3,46 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
+import { Restaurant } from '../restaurant/entities/restaurant.entity'; 
+import { RestaurantService } from '../restaurant/restaurant.service'; 
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
-
-
-async register(createUserDto: CreateUserDto) {
-  const hashedPassword = await bcrypt.hash(createUserDto.password, 10);  // Hashing the password
-  const user = await this.userService.create({ 
-    ...createUserDto, 
-    password: hashedPassword 
-  });
-  return user;
-}
+    private restaurantService: RestaurantService,
+    
+      @InjectRepository(User) private userRepository: Repository<User>,
+      @InjectRepository(Restaurant) private restaurantRepository: Repository<Restaurant>, 
+    ) {}
+  
+    async register(createUserDto: CreateUserDto) {
+      
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10); // Hash password
+    
+      // Create and save user in users table
+      const user = await this.userService.create({ 
+        ...createUserDto, 
+        password: hashedPassword 
+      });
+    
+      // If user is registering as a restaurant, also save in restaurants table
+      if (createUserDto.role === 'restaurant') {
+        await this.restaurantService.create({ 
+          name: createUserDto.name, 
+          email: createUserDto.email, 
+          owner: user // Link the restaurant with the user
+        });
+      }
+    
+      return user;
+    }
+    
+  
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);

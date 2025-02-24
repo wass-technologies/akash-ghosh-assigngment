@@ -9,7 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>, // Injects the User repository to interact with the database
+    private readonly userRepository: Repository<User>, 
   ) {}
 
   async findByEmail(email: string): Promise<User | undefined> {

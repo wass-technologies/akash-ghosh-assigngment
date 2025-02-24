@@ -7,7 +7,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto);
+    return await this.authService.register(createUserDto);
   }
 
   @Post('login')
@@ -23,7 +23,7 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Req() req) {
-    return req.user; // Returns user details extracted from JWT token
+    return req.user; 
   }
   }
 

@@ -15,11 +15,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'default_secret', // ✅ Ensure a default value
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'default_secret', // Ensure a default value
     });
   }
 
   async validate(payload: { sub: number; email: string }) {
+    const user = await this.userService.findByEmail(payload.email);
+    if (!user) return null; // Return null if the user does not exist
+  
+    return { userId: user.id, email: user.email, role: user.role }; //  Include role
+  }
+  async ivalidate(payload: { sub: number; email: string }) {
     const user = await this.userService.findByEmail(payload.email);
     if (!user) return null;
     return user; 
