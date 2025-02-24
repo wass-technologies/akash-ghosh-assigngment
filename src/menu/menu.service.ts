@@ -10,60 +10,32 @@ import { Restaurant } from '../restaurant/entities/restaurant.entity';
 export class MenuService {
   constructor(
     @InjectRepository(Menu)
-    private menuRepository: Repository<Menu>,
+    private menuRepo: Repository<Menu>,
     
     @InjectRepository(Restaurant)
-    private restaurantRepository: Repository<Restaurant>
+    private restaurantRepo: Repository<Restaurant>
   ) {}
 
-  async create(createMenuDto: CreateMenuDto): Promise<Menu> {
-    const restaurant = await this.restaurantRepository.findOne({
-      where: { id: createMenuDto.restaurantId },
-    });
+  async addMenuItem(menuDto: CreateMenuDto) {
+    const { restaurantId, item_name, price, description, isAvailable } = menuDto;
+
+    
+    const restaurant = await this.restaurantRepo.findOne({ where: { id: restaurantId } });
 
     if (!restaurant) {
-      throw new NotFoundException('Restaurant not found');
+        throw new NotFoundException('Restaurant not found');
     }
 
-    const menu = this.menuRepository.create({ ...createMenuDto, restaurant });
-    return await this.menuRepository.save(menu);
-  }
-
-  findAll(): Promise<Menu[]> {
-    return this.menuRepository.find({
-      relations: ['restaurant'],
-    });
-  }
-
-  async findOne(id: number): Promise<Menu> {
-    const menu = await this.menuRepository.findOne({
-      where: { id },
-      relations: ['restaurant'],
-    });
-    if (!menu) {
-      throw new NotFoundException('Menu not found');
-    }
-    return menu;
-  }
-
-  async update(id: number, updateMenuDto: UpdateMenuDto): Promise<Menu> {
-    const menu = await this.menuRepository.preload({
-      id,
-      ...updateMenuDto,
+    
+    const menuItem = this.menuRepo.create({
+        item_name,
+        price,
+        description,
+        isAvailable,
+        restaurant,
     });
 
-    if (!menu) {
-      throw new NotFoundException('Menu not found');
-    }
+    return await this.menuRepo.save(menuItem);
+}
 
-    return this.menuRepository.save(menu);
-  }
-
-  async remove(id: number): Promise<{ message: string }> {
-    const result = await this.menuRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Menu not found');
-    }
-    return { message: 'Menu deleted successfully' };
-  }
 }

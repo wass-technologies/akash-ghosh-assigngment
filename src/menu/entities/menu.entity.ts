@@ -13,6 +13,12 @@ export class Menu {
   @Column('decimal')
   price: number;
 
+  @Column()
+  description: string;
+  
+  @Column()
+  restaurantId: number; 
+
   @Column({ default: true })
   isAvailable: boolean;
 

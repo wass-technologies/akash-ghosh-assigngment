@@ -2,33 +2,20 @@ import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/commo
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
+import { JwtAuthGuard } from '../Auth/auth.guard';
+import { RolesGuard } from '../Auth/roles.guard';
+import { Roles } from '../Auth/roles.decorator';
+import { UserRole } from '../constants/enums';
+import{UseGuards} from '@nestjs/common';
 
 @Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.RESTAURANT)  // ✅ Ensure only restaurant owners can add menus
   @Post()
-  create(@Body() createMenuDto: CreateMenuDto) {
-    return this.menuService.create(createMenuDto);
+  async addMenu(@Body() createMenuDto: CreateMenuDto) {
+    return this.menuService.addMenuItem(createMenuDto);
   }
 
-  @Get()
-  findAll() {
-    return this.menuService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.menuService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
-    return this.menuService.update(+id, updateMenuDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.menuService.remove(+id);
-  }
 }

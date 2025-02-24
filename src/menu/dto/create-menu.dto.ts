@@ -1,14 +1,17 @@
-import { IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsBoolean ,IsString} from 'class-validator';
 
 export class CreateMenuDto {
   @IsNotEmpty()
-  name: string;
+  item_name: string;
 
   @IsNumber()
   price: number;
 
   @IsBoolean()
   isAvailable: boolean;
+
+  @IsString()
+  description: string;
 
   @IsNumber()
   restaurantId: number;
