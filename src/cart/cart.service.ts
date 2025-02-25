@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException ,BadRequestException,ForbiddenException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
@@ -6,64 +6,81 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { User } from '../user/entities/user.entity';
 import { Menu } from '../menu/entities/menu.entity';
+import { Restaurant } from '../restaurant/entities/restaurant.entity';
 
 @Injectable()
 export class CartService {
   constructor(
-    @InjectRepository(Cart)
-    private readonly cartRepository: Repository<Cart>,
-
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-
-    @InjectRepository(Menu)
-    private readonly menuRepository: Repository<Menu>,
+    @InjectRepository(Cart) private cartRepo: Repository<Cart>,
+    @InjectRepository(Menu) private menuRepo: Repository<Menu>,
+    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Restaurant) private restaurantRepo: Repository<Restaurant>
+    
   ) {}
 
-  async create(createCartDto: CreateCartDto) {
-    const user = await this.userRepository.findOne({ where: { id: createCartDto.userId } });
-    const menu = await this.menuRepository.findOne({ where: { id: createCartDto.menuId } });
+ 
+  async addItemToCart(userId: number, createCartDto: CreateCartDto) {
+    const { menuItemId, quantity } = createCartDto;
 
-    if (!user || !menu) {
-      throw new NotFoundException('User or Menu not found');
-    }
-
-    const cart = this.cartRepository.create({
-      user,
-      menu,
-      quantity: createCartDto.quantity,
-      totalPrice: menu.price * createCartDto.quantity,
+    // Find the menu item and include its associated restaurant
+    const menuItem = await this.menuRepo.findOne({
+        where: { id: menuItemId },
+        relations: ['restaurant'], // Include restaurant data
     });
 
-    return this.cartRepository.save(cart);
-  }
+    if (!menuItem) {
+        throw new NotFoundException('Menu item not found');
+    }
 
-  findAll() {
-    return this.cartRepository.find({ relations: ['user', 'menu'] });
-  }
+    // Get restaurantId dynamically
+    const restaurantId = menuItem.restaurant?.id;
+    if (!restaurantId) {
+        throw new NotFoundException('Restaurant not found for this menu item');
+    }
 
-  findOne(id: number) {
-    return this.cartRepository.findOne({ where: { id }, relations: ['user', 'menu'] });
-  }
+    // Find user
+    const user = await this.userRepo.findOne({ where: { id:userId } });
+    
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
 
-  async update(id: number, updateCartDto: UpdateCartDto) {
-    const cart = await this.cartRepository.preload({
-      id,
-      ...updateCartDto,
+    // Check if the item is already in the cart
+    let cartItem = await this.cartRepo.findOne({
+        where: { user: { id: userId }, menu: { id: menuItemId } },
+        relations: ['menu', 'user', 'restaurant'], 
     });
 
-    if (!cart) {
-      throw new NotFoundException('Cart not found');
+    if (cartItem) {
+        // If item exists
+        cartItem.quantity += quantity;
+        cartItem.totalPrice = cartItem.menu.price * cartItem.quantity;
+    } else {
+        //  create a new cart entry
+        cartItem = this.cartRepo.create({
+            menu: menuItem,
+            user: user,
+            quantity,
+            totalPrice: menuItem.price * quantity,
+            restaurant: { id: restaurantId },
+        });
     }
 
-    return this.cartRepository.save(cart);
-  }
+    const savedCartItem = await this.cartRepo.save(cartItem);
 
-  async remove(id: number) {
-    const cart = await this.cartRepository.findOne({ where: { id } });
-    if (!cart) {
-      throw new NotFoundException('Cart not found');
-    }
-    return this.cartRepository.remove(cart);
-  }
+    
+    return {
+        id: savedCartItem.id,
+        quantity: savedCartItem.quantity,
+        totalPrice: savedCartItem.totalPrice,
+        restaurant: { id: restaurantId, name: menuItem.restaurant.name }, 
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
+        menu: { 
+            id: menuItem.id, 
+            item_name: menuItem.item_name, 
+            price: menuItem.price, 
+            description: menuItem.description 
+        }
+    };
+}
 }

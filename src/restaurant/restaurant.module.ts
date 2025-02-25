@@ -11,6 +11,6 @@ import { MenuModule } from 'src/menu/menu.module';
   imports: [TypeOrmModule.forFeature([Restaurant, User])],
   controllers: [RestaurantController],
   providers: [RestaurantService],
-  exports: [RestaurantService],
+  exports: [RestaurantService,TypeOrmModule],
 })
 export class RestaurantModule {}

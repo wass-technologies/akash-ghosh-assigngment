@@ -3,6 +3,7 @@ import { User } from '../../user/entities/user.entity';
 import { Order } from '../../order/entities/order.entity';
 import { RestaurantStatus } from '../../constants/enums';
 import{Menu} from '../../menu/entities/menu.entity';
+import { Cart } from 'src/cart/entities/cart.entity';
 
 @Entity()
 export class Restaurant {
@@ -39,4 +40,6 @@ export class Restaurant {
   ownerId: number; 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
 menus: Menu[];
+@OneToMany(() => Cart, (cart) => cart.restaurant)
+cart: Cart[];
 }
