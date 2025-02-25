@@ -18,4 +18,6 @@ export class Cart {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
+  @Column()
+  restaurantId: number;
 }

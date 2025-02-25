@@ -26,13 +26,17 @@ export class Restaurant {
   status: RestaurantStatus; 
 
   @Column({ default: false }) 
-  isActive: boolean; // Admin can activate/deactivate
+  isActive: boolean; 
+
 
   @OneToMany(() => Order, (order) => order.restaurant)
   orders: Order[];
   
   @ManyToOne(() => User, (user) => user.restaurants, { nullable: false })
   owner: User;
+
+  @Column()
+  ownerId: number; 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
 menus: Menu[];
 }

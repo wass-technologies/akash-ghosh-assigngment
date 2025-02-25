@@ -34,6 +34,7 @@ export class RestaurantService {
     }
 
     return {
+
       id: restaurant.id,
       name: restaurant.name,
       isActive: restaurant.isActive,

@@ -18,9 +18,6 @@ export class RestaurantController {
     return await this.restaurantService.getRestaurantStatus(Number(id));
   }
 
-
-  
-
 @Get('active')
 getActiveRestaurants() {
   return this.restaurantService.getActiveRestaurants();
