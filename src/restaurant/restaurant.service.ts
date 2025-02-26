@@ -45,7 +45,7 @@ export class RestaurantService {
   async getActiveRestaurants() {
     return await this.restaurantRepo.find({ where: { isActive: true } });
   }
-// set active or inactive status of the restaurant
+
   async setRestaurantStatus(id: number, isActive: boolean) {
     const restaurant = await this.restaurantRepo.findOne({ where: { id } });
     if (!restaurant) {
@@ -56,7 +56,7 @@ export class RestaurantService {
 
   await this.restaurantRepo.update(id, { 
     isActive: isActive, 
-    status: newStatus // Ensure this field exists in your entity
+    status: newStatus 
   });
 
     return {

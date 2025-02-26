@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsBoolean ,IsString} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsBoolean ,IsString,IsEnum,IsOptional} from 'class-validator';
+import { AvailabilityStatus } from '../../constants/enums';
 
 export class CreateMenuDto {
   @IsNotEmpty()
@@ -15,4 +16,8 @@ export class CreateMenuDto {
 
   @IsNumber()
   restaurantId: number;
+
+  @IsEnum(AvailabilityStatus)
+  @IsOptional()
+  availability?: AvailabilityStatus;
 }

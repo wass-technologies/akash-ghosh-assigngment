@@ -17,4 +17,8 @@ export enum UserRole {
     Active = 'Active',
     Inactive = 'Inactive',
   }
+  export enum AvailabilityStatus {
+    AVAILABLE = 'AVAILABLE',
+    UNAVAILABLE = 'UNAVAILABLE',
+  }
   

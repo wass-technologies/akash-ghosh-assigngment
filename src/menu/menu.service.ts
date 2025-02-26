@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException,ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException,ForbiddenException ,BadRequestException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Menu } from './entities/menu.entity';
@@ -6,6 +6,7 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { UserRole } from '../constants/enums';
+import { AvailabilityStatus } from '../constants/enums';
 
 
 @Injectable()
@@ -20,6 +21,7 @@ export class MenuService {
 
   async addMenuItem(menuDto: CreateMenuDto) {
     const { restaurantId, item_name, price, description, isAvailable } = menuDto;
+  
 
     
     const restaurant = await this.restaurantRepo.findOne({ where: { id: restaurantId } });
@@ -27,13 +29,22 @@ export class MenuService {
     if (!restaurant) {
         throw new NotFoundException('Restaurant not found');
     }
+    const existingMenuItem = await this.menuRepo.findOne({
+      where: {
+        item_name, 
+        restaurant: { id: restaurantId }  // Ensure we're checking within the same restaurant
+      }
+    });
+    if (existingMenuItem) {
+      throw new BadRequestException('A menu item with this name already exists for this restaurant');
+    }
 
     
     const menuItem = this.menuRepo.create({
         item_name,
         price,
         description,
-        isAvailable,
+        availability: AvailabilityStatus.AVAILABLE ? AvailabilityStatus.AVAILABLE : AvailabilityStatus.UNAVAILABLE,
         restaurant,
     });
 

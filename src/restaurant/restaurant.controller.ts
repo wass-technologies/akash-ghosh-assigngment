@@ -1,10 +1,10 @@
 import { Controller, Post, Get, Param, Patch, Body,Req } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { Roles } from '../Auth/roles.decorator';
+import { Roles } from '../constants/roles.decorator';
 import { UserRole } from '../constants/enums';
 import { JwtAuthGuard } from '../Auth/auth.guard';
-import { RolesGuard } from '../Auth/roles.guard';
+import { RolesGuard } from '../RoleBased/roles.guard';
 import { UseGuards, Request } from '@nestjs/common';
 import { SetMetadata } from '@nestjs/common';
 @Controller('restaurants')
@@ -23,6 +23,7 @@ getActiveRestaurants() {
   return this.restaurantService.getActiveRestaurants();
 }
 
+// actvate by admin
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)

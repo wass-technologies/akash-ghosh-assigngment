@@ -16,6 +16,7 @@ export class CreateCartDto {
   @IsInt()
   @IsNotEmpty()
   totalPrice: number;
+ 
   
 }
 

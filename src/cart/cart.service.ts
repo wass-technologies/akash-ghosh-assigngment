@@ -83,4 +83,47 @@ export class CartService {
         }
     };
 }
+
+async getCartItems(userId: number): Promise<Cart[]> {
+  return await this.cartRepo.find({
+    where: { user: { id: userId } },
+    relations: ['menu', 'restaurant'], // Load related menu and restaurant details
+  });
+}
+
+async updateCartItem(userId: number, cartId: number, updateCartDto: UpdateCartDto): Promise<Cart> {
+  // Find the cart item that belongs to the logged-in user
+  const cartItem = await this.cartRepo.findOne({
+    where: { id: cartId, user: { id: userId } },
+    relations: ['menu'],
+  });
+  if (!cartItem) {
+    throw new NotFoundException('Cart item not found');
+  }
+
+  if (updateCartDto.quantity) {
+    cartItem.quantity = updateCartDto.quantity;
+    
+    cartItem.totalPrice = Number(cartItem.menu.price) * cartItem.quantity;
+  }
+
+  
+
+  return await this.cartRepo.save(cartItem);
+}
+async removeCartItem(userId: number, cartId: number): Promise<{ message: string }> {
+
+  const cartItem = await this.cartRepo.findOne({ 
+    where: { id: cartId, user: { id: userId } },
+  });
+  
+  if (!cartItem) {
+    throw new NotFoundException('Cart item not found');
+  }
+
+  await this.cartRepo.remove(cartItem);
+
+  return { message: 'Cart item removed successfully' };
+}
+
 }

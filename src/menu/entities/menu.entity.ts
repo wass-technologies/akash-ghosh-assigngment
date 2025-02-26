@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 import { Cart } from '../../cart/entities/cart.entity';
+import { AvailabilityStatus } from '../../constants/enums';
 
 @Entity()
 export class Menu {
@@ -19,8 +20,13 @@ export class Menu {
   @Column()
   restaurantId: number; 
 
-  @Column({ default: true })
-  isAvailable: boolean;
+  @Column({
+    type: 'enum',
+    enum: AvailabilityStatus,
+    default: AvailabilityStatus.AVAILABLE,
+  })
+  availability: AvailabilityStatus;
+
 
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.menus, { onDelete: 'CASCADE' })
   restaurant: Restaurant;
@@ -28,3 +34,4 @@ export class Menu {
   @OneToMany(() => Cart, (cart) => cart.menu)
   carts: Cart[];
 }
+

@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request ,Req} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request ,Req,Patch} from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { JwtAuthGuard } from '../Auth/auth.guard';
-import { RolesGuard } from '../Auth/roles.guard';
-import { Roles } from '../Auth/roles.decorator';
+import { RolesGuard } from '../RoleBased/roles.guard';
+import { Roles } from '../constants/roles.decorator';
 import { UserRole } from '../constants/enums';
 
 @Controller('cart')
@@ -16,7 +16,34 @@ export class CartController {
   @Post()
   async addItemToCart(@Body() createCartDto: CreateCartDto, @Req() req) {
     console.log("Logged-in user:", req.user); 
-    const userId = req.user.id; 
+    const userId = req.user.userId;
     return this.cartService.addItemToCart(userId, createCartDto);
+  }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CUSTOMER)
+  @Get()
+  async getCartItems(@Req() req) {
+    const userId = req.user.userid; 
+    return this.cartService.getCartItems(userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CUSTOMER)
+  @Patch(':id')
+  async updateCartItem(
+    @Param('id') id: number,
+    @Body() updateCartDto: UpdateCartDto,
+    @Req() req,
+  ) {
+    const userId = req.user.userid; 
+    return this.cartService.updateCartItem(userId, id, updateCartDto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CUSTOMER)
+  @Delete(':id')
+  async removeCartItem(@Param('id') id: number, @Req() req) {
+    const userId = req.user.userid; 
+    return this.cartService.removeCartItem(userId, id);
   }
 }
