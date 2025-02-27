@@ -32,7 +32,7 @@ export class MenuService {
     const existingMenuItem = await this.menuRepo.findOne({
       where: {
         item_name, 
-        restaurant: { id: restaurantId }  // Ensure we're checking within the same restaurant
+        restaurant: { id: restaurantId }  
       }
     });
     if (existingMenuItem) {

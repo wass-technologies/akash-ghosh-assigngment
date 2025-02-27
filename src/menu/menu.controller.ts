@@ -4,7 +4,7 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { JwtAuthGuard } from '../Auth/auth.guard';
 import { RolesGuard } from '../RoleBased/roles.guard';
-import { Roles } from '../constants/roles.decorator';
+import { Roles } from '../RoleBased/roles.decorator';
 import { UserRole } from '../constants/enums';
 import{UseGuards} from '@nestjs/common';
 
@@ -28,6 +28,7 @@ export class MenuController {
   async getMenuByRestaurantByid(@Param('id') id: number) {  
       return this.menuService.getMenuByRestaurant(id);
   }
+  // this portion not work 
   
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.RESTAURANT) 

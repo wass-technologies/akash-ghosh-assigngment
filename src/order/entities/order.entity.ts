@@ -1,31 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne ,OneToMany} from 'typeorm';
-import { OrderStatus } from '../../constants/enums';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
-import { Menu } from '../../menu/entities/menu.entity';
 
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  
-@ManyToOne(() => User, (user) => user.orders)
-customer: User;
+  @ManyToOne(() => User, (user) => user.orders)
+  user: User;
 
-@ManyToOne(() => Restaurant, (restaurant) => restaurant.orders)
-restaurant: Restaurant;
-@OneToMany(() => Menu, (menu) => menu.id)
-  items: Menu[];
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.orders)
+  restaurant: Restaurant;
 
-  @Column()
-  totalPrice: number;
+  // Store menu items inside order
+  @Column('json')
+  items: { menuId: number; menuName: string; quantity: number; totalPrice: number }[];
 
-  @Column({
-    type: 'enum',
-    enum: OrderStatus,
-    default: OrderStatus.PENDING,
-  })
-  status: OrderStatus;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  totalAmount: number;
 
+  @Column({ type: 'enum', enum: ['Pending', 'Confirmed', 'Delivered'], default: 'Pending' })
+  status: string;
 }

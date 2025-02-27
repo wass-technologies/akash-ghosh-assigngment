@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException ,BadRequestException,ForbiddenException} from '@nestjs/common';
+import { Injectable, NotFoundException ,BadRequestException,ForbiddenException,} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
@@ -22,41 +22,40 @@ export class CartService {
   async addItemToCart(userId: number, createCartDto: CreateCartDto) {
     const { menuItemId, quantity } = createCartDto;
 
-    // Find the menu item and include its associated restaurant
+
     const menuItem = await this.menuRepo.findOne({
         where: { id: menuItemId },
-        relations: ['restaurant'], // Include restaurant data
+        relations: ['restaurant'], 
     });
 
     if (!menuItem) {
         throw new NotFoundException('Menu item not found');
     }
 
-    // Get restaurantId dynamically
     const restaurantId = menuItem.restaurant?.id;
     if (!restaurantId) {
         throw new NotFoundException('Restaurant not found for this menu item');
     }
 
-    // Find user
+  
     const user = await this.userRepo.findOne({ where: { id:userId } });
     
     if (!user) {
         throw new NotFoundException('User not found');
     }
 
-    // Check if the item is already in the cart
+    
     let cartItem = await this.cartRepo.findOne({
         where: { user: { id: userId }, menu: { id: menuItemId } },
         relations: ['menu', 'user', 'restaurant'], 
     });
 
     if (cartItem) {
-        // If item exists
+ 
         cartItem.quantity += quantity;
         cartItem.totalPrice = cartItem.menu.price * cartItem.quantity;
     } else {
-        //  create a new cart entry
+        
         cartItem = this.cartRepo.create({
             menu: menuItem,
             user: user,
@@ -87,12 +86,12 @@ export class CartService {
 async getCartItems(userId: number): Promise<Cart[]> {
   return await this.cartRepo.find({
     where: { user: { id: userId } },
-    relations: ['menu', 'restaurant'], // Load related menu and restaurant details
+    relations: ['menu', 'restaurant'], 
   });
 }
 
 async updateCartItem(userId: number, cartId: number, updateCartDto: UpdateCartDto): Promise<Cart> {
-  // Find the cart item that belongs to the logged-in user
+ 
   const cartItem = await this.cartRepo.findOne({
     where: { id: cartId, user: { id: userId } },
     relations: ['menu'],
@@ -125,5 +124,16 @@ async removeCartItem(userId: number, cartId: number): Promise<{ message: string 
 
   return { message: 'Cart item removed successfully' };
 }
+async getCartByUserId(userId: number): Promise<Cart | null> {
+  const cart = await this.cartRepo.findOne({ 
+    where: { user: { id: userId } }, 
+    relations: ["items", "items.menuItem"] 
+  });
+  return cart || null; // Explicitly returning null if cart doesn't exist
+}
+async clearCart(userId: number): Promise<void> {
+  await this.cartRepo.delete({ user: { id: userId } });
+}
 
 }
+

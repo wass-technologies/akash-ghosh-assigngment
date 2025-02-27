@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { Order } from '../../order/entities/order.entity';
 import { RestaurantStatus } from '../../constants/enums';
 import{Menu} from '../../menu/entities/menu.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
+import { Order } from '../../order/entities/order.entity';
 
 @Entity()
 export class Restaurant {
@@ -30,8 +30,7 @@ export class Restaurant {
   isActive: boolean; 
 
 
-  @OneToMany(() => Order, (order) => order.restaurant)
-  orders: Order[];
+  
   
   @ManyToOne(() => User, (user) => user.restaurants, { nullable: false })
   owner: User;
@@ -42,4 +41,6 @@ export class Restaurant {
 menus: Menu[];
 @OneToMany(() => Cart, (cart) => cart.restaurant)
 cart: Cart[];
+@OneToMany(() => Order, (order) => order.restaurant)
+orders: Order[]; 
 }

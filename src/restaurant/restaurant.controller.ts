@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Param, Patch, Body,Req } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { Roles } from '../constants/roles.decorator';
+import { Roles } from '../RoleBased/roles.decorator';
 import { UserRole } from '../constants/enums';
 import { JwtAuthGuard } from '../Auth/auth.guard';
 import { RolesGuard } from '../RoleBased/roles.guard';
