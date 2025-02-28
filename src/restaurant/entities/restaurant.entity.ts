@@ -16,8 +16,7 @@ export class Restaurant {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  password: string;
+  
 
   @Column({
     type: 'enum',
@@ -29,14 +28,12 @@ export class Restaurant {
   @Column({ default: false }) 
   isActive: boolean; 
 
-
-  
-  
   @ManyToOne(() => User, (user) => user.restaurants, { nullable: false })
   owner: User;
 
   @Column()
   ownerId: number; 
+  
   @OneToMany(() => Menu, (menu) => menu.restaurant)
 menus: Menu[];
 @OneToMany(() => Cart, (cart) => cart.restaurant)

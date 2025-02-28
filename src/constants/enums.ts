@@ -5,10 +5,11 @@ export enum UserRole {
   }
   
   export enum OrderStatus {
-    PENDING = "Pending",
-    PROCESSING = "Processing",
-    COMPLETED = "Completed",
-    CANCELLED = "Cancelled"
+    PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED'
   }
   
   export enum RestaurantStatus {

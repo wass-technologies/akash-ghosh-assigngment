@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request ,Req,Patch} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request ,Req,Patch,UnauthorizedException} from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -15,17 +15,24 @@ export class CartController {
   @Roles(UserRole.CUSTOMER) 
   @Post()
   async addItemToCart(@Body() createCartDto: CreateCartDto, @Req() req) {
-    console.log("Logged-in user:", req.user); 
+  
     const userId = req.user.userId;
+    console.log(userId)
     return this.cartService.addItemToCart(userId, createCartDto);
   }
+
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.CUSTOMER)
-  @Get()
-  async getCartItems(@Req() req) {
-    const userId = req.user.userid; 
-    return this.cartService.getCartItems(userId);
+@Roles(UserRole.CUSTOMER)
+@Get()
+async getCartItems(@Req() req) {
+  console.log("Decoded JWT User:", req.user); 
+  const userId = req.user.userId; 
+  if (!userId) {
+    throw new UnauthorizedException('User ID not found in token');
   }
+  return this.cartService.getCartItems(userId);
+}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.CUSTOMER)
@@ -38,7 +45,6 @@ export class CartController {
     const userId = req.user.userid; 
     return this.cartService.updateCartItem(userId, id, updateCartDto);
   }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.CUSTOMER)
   @Delete(':id')

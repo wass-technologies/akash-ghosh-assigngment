@@ -25,9 +25,9 @@ export class User {
   })
   role: UserRole;
 
+
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
-
 
   @OneToMany(() => Restaurant, (restaurant) => restaurant.owner)
   restaurants: Restaurant[]; 

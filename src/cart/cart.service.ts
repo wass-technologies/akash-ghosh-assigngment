@@ -21,8 +21,6 @@ export class CartService {
  
   async addItemToCart(userId: number, createCartDto: CreateCartDto) {
     const { menuItemId, quantity } = createCartDto;
-
-
     const menuItem = await this.menuRepo.findOne({
         where: { id: menuItemId },
         relations: ['restaurant'], 
@@ -87,7 +85,10 @@ async getCartItems(userId: number): Promise<Cart[]> {
   return await this.cartRepo.find({
     where: { user: { id: userId } },
     relations: ['menu', 'restaurant'], 
+  
   });
+  
+  
 }
 
 async updateCartItem(userId: number, cartId: number, updateCartDto: UpdateCartDto): Promise<Cart> {
@@ -124,16 +125,7 @@ async removeCartItem(userId: number, cartId: number): Promise<{ message: string 
 
   return { message: 'Cart item removed successfully' };
 }
-async getCartByUserId(userId: number): Promise<Cart | null> {
-  const cart = await this.cartRepo.findOne({ 
-    where: { user: { id: userId } }, 
-    relations: ["items", "items.menuItem"] 
-  });
-  return cart || null; // Explicitly returning null if cart doesn't exist
-}
-async clearCart(userId: number): Promise<void> {
-  await this.cartRepo.delete({ user: { id: userId } });
-}
+
 
 }
 

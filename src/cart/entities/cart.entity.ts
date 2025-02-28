@@ -9,24 +9,26 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.carts, { onDelete: 'CASCADE',nullable: false }) 
+  @ManyToOne(() => User, (user) => user.carts)
+@JoinColumn({ name: 'userId' })  // ✅ Explicitly link `userId`
+user: User;
 
-  user: User;
 
   @ManyToOne(() => Menu, (menu) => menu.carts, { eager: true }) 
   menu: Menu;
+
   @Column()
   quantity: number;
 
-
-
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
+
+
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.cart, { nullable: false })
   @JoinColumn({ name: 'restaurantId' }) 
   restaurant: Restaurant;
+
   @Column()
   restaurantId: number;
  
-
 }

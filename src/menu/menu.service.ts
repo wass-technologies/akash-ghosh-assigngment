@@ -60,7 +60,11 @@ async getMenuByRestaurant(restaurantId: number) {
       throw new NotFoundException('Restaurant not found');
   }
 
-  return await this.menuRepo.find({ where: { restaurant: { id: restaurantId } } });
+  const menuItems = await this.menuRepo.find({ where: { restaurant: { id: restaurantId } } });
+  const totalMenuItems = menuItems.length; // Calculate total menu items
+
+  return { totalMenuItems, menuItems };
+  
 }
 
 

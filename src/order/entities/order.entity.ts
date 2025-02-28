@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column ,JoinColumn} from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 
@@ -7,7 +7,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.orders, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.orders)
