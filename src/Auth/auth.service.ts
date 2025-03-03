@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Restaurant } from '../restaurant/entities/restaurant.entity'; 
 import { RestaurantService } from '../restaurant/restaurant.service'; 
-
+import { LoginDto } from '../Auth/dto/Login.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,24 +49,29 @@ export class AuthService {
     
   
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+    async validateUser(loginDto: LoginDto) {  // ✅ Use DTO here
+      const { email, password } = loginDto;  
+    
+      const user = await this.userService.findByEmail(email);
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+    
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+    
+      return user; 
     }
+    
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+    async login(user: any) {
+      const payload = { sub: user.id, email: user.email, role: user.role };  // ✅ Include role
+      return {
+        access_token: this.jwtService.sign(payload),
+      };
     }
-
-    return user; // Returning user if credentials are valid
-  }
-
-  async login(user: any) {
-    const payload = { sub: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+    
+  
 }

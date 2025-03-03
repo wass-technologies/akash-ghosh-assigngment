@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Body, Param, Patch ,Req, Request,UnauthorizedException} from '@nestjs/common';
 import { OrderService } from './order.service';
-import { JwtAuthGuard } from 'src/Auth/auth.guard';
-import { RolesGuard } from 'src/RoleBased/roles.guard';
-import { Roles } from 'src/RoleBased/roles.decorator';
+import { JwtAuthGuard } from 'src/Auth/Gurd/auth.guard';
+import { RolesGuard } from 'src/Auth/Gurd/roles.guard';
+import { Roles } from 'src/Auth/Gurd/roles.decorator';
 import { Repository } from "typeorm";
 import{UseGuards} from '@nestjs/common';
 import { UserRole } from 'src/constants/enums';

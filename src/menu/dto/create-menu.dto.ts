@@ -8,8 +8,7 @@ export class CreateMenuDto {
   @IsNumber()
   price: number;
 
-  @IsBoolean()
-  isAvailable: boolean;
+
 
   @IsString()
   description: string;

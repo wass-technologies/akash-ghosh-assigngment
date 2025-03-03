@@ -1,12 +1,13 @@
 import { Controller, Post, Get, Param, Patch, Body,Req } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { Roles } from '../RoleBased/roles.decorator';
+import { Roles } from '../Auth/Gurd/roles.decorator';
 import { UserRole } from '../constants/enums';
-import { JwtAuthGuard } from '../Auth/auth.guard';
-import { RolesGuard } from '../RoleBased/roles.guard';
+import { JwtAuthGuard } from '../Auth/Gurd/auth.guard';
+import { RolesGuard } from '../Auth/Gurd/roles.guard';
 import { UseGuards, Request } from '@nestjs/common';
 import { SetMetadata } from '@nestjs/common';
+import { User } from 'src/user/entities/user.entity';
 @Controller('restaurants')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
@@ -17,10 +18,19 @@ export class RestaurantController {
   async getRestaurantStatus(@Param('id') id: number) {
     return await this.restaurantService.getRestaurantStatus(Number(id));
   }
+// check active resturant 
 
 @Get('active')
 getActiveRestaurants() {
   return this.restaurantService.getActiveRestaurants();
+}
+// check menu by admin 
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN) 
+@Get(':restaurantId/menu')
+async getMenuByRestaurantForAdmin(@Param('restaurantId') restaurantId: number) {
+  return this.restaurantService.getMenuByRestaurantForAdmin(restaurantId);
 }
 
 // actvate by admin

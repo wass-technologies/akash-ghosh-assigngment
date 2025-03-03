@@ -5,8 +5,6 @@ import { Restaurant } from './entities/restaurant.entity';
 import { UserRole } from '../constants/enums';
 import { User } from '../user/entities/user.entity';
 import { RestaurantStatus } from '../constants/enums';
-
-
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Injectable()
@@ -46,6 +44,20 @@ export class RestaurantService {
     return await this.restaurantRepo.find({ where: { isActive: true } });
   }
 
+// find menu foe admin
+  async getMenuByRestaurantForAdmin(restaurantId: number) {
+    const restaurant = await this.restaurantRepo.findOne({
+      where: { id: restaurantId },
+      relations: ['menus'],
+    });
+  
+    if (!restaurant) {
+      throw new NotFoundException('Restaurant not found');
+    }
+  
+    return restaurant.menus; 
+  }
+  
   async setRestaurantStatus(id: number, isActive: boolean) {
     const restaurant = await this.restaurantRepo.findOne({ where: { id } });
     if (!restaurant) {

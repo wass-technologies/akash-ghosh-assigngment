@@ -2,9 +2,9 @@ import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request ,Re
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
-import { JwtAuthGuard } from '../Auth/auth.guard';
-import { RolesGuard } from '../RoleBased/roles.guard';
-import { Roles } from '../RoleBased/roles.decorator';
+import { JwtAuthGuard } from '../Auth/Gurd/auth.guard';
+import { RolesGuard } from '../Auth/Gurd/roles.guard';
+import { Roles } from '../Auth/Gurd/roles.decorator';
 import { UserRole } from '../constants/enums';
 
 @Controller('cart')

@@ -20,7 +20,7 @@ export class MenuService {
   ) {}
 
   async addMenuItem(menuDto: CreateMenuDto) {
-    const { restaurantId, item_name, price, description, isAvailable } = menuDto;
+    const { restaurantId, item_name, price, description,  } = menuDto;
   
 
     
@@ -53,6 +53,8 @@ export class MenuService {
 async getAllMenus() {
   return await this.menuRepo.find({ relations: ['restaurant'] });
 }
+
+
 // View menu by restaurant ID
 async getMenuByRestaurant(restaurantId: number) {
   const restaurant = await this.restaurantRepo.findOne({ where: { id: restaurantId } });
@@ -61,7 +63,7 @@ async getMenuByRestaurant(restaurantId: number) {
   }
 
   const menuItems = await this.menuRepo.find({ where: { restaurant: { id: restaurantId } } });
-  const totalMenuItems = menuItems.length; // Calculate total menu items
+  const totalMenuItems = menuItems.length; 
 
   return { totalMenuItems, menuItems };
   
@@ -78,6 +80,7 @@ async updateMenuItem(menuId: number, updateData: UpdateMenuDto, user: any) {
   if (!menuItem) {
     throw new NotFoundException('Menu item not found');
   }
+
   const restaurant = await this.restaurantRepo.findOne({ where: { id: menuItem.restaurantId } });
 
   if (!restaurant) {
@@ -86,15 +89,15 @@ async updateMenuItem(menuId: number, updateData: UpdateMenuDto, user: any) {
 
   if (
     user.role !== UserRole.RESTAURANT || 
-    user.userId !== menuItem.restaurant?.ownerId )// Ensure `ownerId` is used correctly
-  {
-    throw new ForbiddenException('You can only delete your own menu items');
+    user.userId !== restaurant.ownerId // ✅ Use restaurant.ownerId directly
+  ) {
+    throw new ForbiddenException('You can only update your own menu items');
   }
-  await this.menuRepo.update(menuId, updateData);
+
+  await this.menuRepo.update(menuId, updateData); // ✅ This updates the availability
 
   return { message: 'Menu item updated successfully' };
 }
-
 
 
 // Delete menu item (Only restaurant owner)

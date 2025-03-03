@@ -32,7 +32,7 @@ export class UserController {
   // Get a single user by ID
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: number) {
     try {
       const user = await this.userService.findOne(+id);
       if (!user) {
