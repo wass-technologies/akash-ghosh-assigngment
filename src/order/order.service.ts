@@ -9,7 +9,7 @@ import{Restaurant} from '../restaurant/entities/restaurant.entity';
 import { Order } from 'src/order/entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderStatus } from '../constants/enums'
+import { OrderStatus } from '../enums'
 import { console } from 'inspector';
 import { omit } from 'lodash';
 

@@ -9,6 +9,7 @@ import { User } from '../user/entities/user.entity';
 import { Restaurant } from '../restaurant/entities/restaurant.entity'; 
 import { RestaurantService } from '../restaurant/restaurant.service'; 
 import { LoginDto } from '../Auth/dto/Login.dto';
+import { UserRole } from 'src/enums';
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,18 +26,29 @@ export class AuthService {
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
-
-      
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10); // Hash password
     
-      
-      const user = await this.userService.create({ 
-        ...createUserDto, 
-        password: hashedPassword 
+      // Default to ADMIN if no role is provided
+      const role = createUserDto.role || UserRole.ADMIN;
+    
+      // If the role is ADMIN, check if an admin already exists
+      if (role === UserRole.ADMIN) {
+        const adminExists = await this.userRepository.count({ where: { role: UserRole.ADMIN } });
+    
+        if (adminExists > 0) {
+          throw new ConflictException('An admin already exists. Remove the existing admin before registering a new one.');
+        }
+      }
+    
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    
+      const user = await this.userService.create({
+        ...createUserDto,
+        password: hashedPassword,
+        role, // Assign the determined role
       });
     
       // If user is registering as a restaurant,
-      if (createUserDto.role === 'restaurant') {
+      if (createUserDto.role === 'RESATAURANT') {
         await this.restaurantService.create({ 
           name: createUserDto.name, 
           email: createUserDto.email, 

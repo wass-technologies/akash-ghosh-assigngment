@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { OrderStatus } from '../../constants/enums';
+import { OrderStatus } from '../../enums';
 
 export class CreateOrderDto {
   @IsNumber()

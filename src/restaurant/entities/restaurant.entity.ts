@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { RestaurantStatus } from '../../constants/enums';
+import { RestaurantStatus } from '../../enums';
 import{Menu} from '../../menu/entities/menu.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { Order } from '../../order/entities/order.entity';

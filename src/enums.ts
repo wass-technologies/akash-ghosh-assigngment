@@ -1,7 +1,8 @@
 export enum UserRole {
-    ADMIN = 'admin',
-    RESTAURANT = 'restaurant',
-    CUSTOMER = 'customer',
+    ADMIN = 'ADMIN',
+    RESTAURANT = 'RESATAURANT',
+    CUSTOMER = 'CUSTOMER',
+    STAFF='STAFF',
   }
   
   export enum OrderStatus {
@@ -20,4 +21,12 @@ export enum UserRole {
     AVAILABLE = 'AVAILABLE',
     UNAVAILABLE = 'UNAVAILABLE',
   }
+  export enum PermissionAction {
+    ACTIVATE_RESTAURANT = 'ACTIVATE_RESTAURANT',
+    DEACTIVATE_RESTAURANT = 'DEACTIVATE_RESTAURANT',
+    DELETE_RESTAURANT = 'DELETE_RESTAURANT',
+    CHECK_MENU = 'CHECK_MENU',
+  }
+  
+  
   

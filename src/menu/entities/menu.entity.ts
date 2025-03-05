@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 import { Cart } from '../../cart/entities/cart.entity';
-import { AvailabilityStatus } from '../../constants/enums';
+import { AvailabilityStatus } from '../../enums';
 
 @Entity()
 export class Menu {

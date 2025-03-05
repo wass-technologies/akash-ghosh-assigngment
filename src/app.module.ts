@@ -7,6 +7,9 @@ import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { AuthModule } from "./Auth/auth.module";
+import { PermissionsModule } from './permissions/permissions.module';
+import { UserPermissionsModule} from './user-permission/user-permission.module';
+
 
 
 @Module({
@@ -20,7 +23,7 @@ import { AuthModule } from "./Auth/auth.module";
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities:[__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
+      synchronize:false,
     }),
     UserModule,
     RestaurantModule,
@@ -28,6 +31,9 @@ import { AuthModule } from "./Auth/auth.module";
     OrderModule,
     CartModule,
     AuthModule,
+    PermissionsModule,
+    UserPermissionsModule,
+   
   ],
 })
 export class AppModule {}

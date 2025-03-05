@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsBoolean ,IsString,IsEnum,IsOptional} from 'class-validator';
-import { AvailabilityStatus } from '../../constants/enums';
+import { AvailabilityStatus } from '../../enums';
 
 export class CreateMenuDto {
   @IsNotEmpty()

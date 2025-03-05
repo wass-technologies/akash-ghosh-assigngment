@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, } from 'typeorm';
-import { UserRole } from '../../constants/enums';
+import { UserRole } from '../../enums';
 import { Order } from 'src/order/entities/order.entity';
 import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { Exclude } from 'class-transformer';
+import { UserPermission } from 'src/user-permission/entities/user-permission.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -12,8 +13,8 @@ export class User {
   @Column()
   name: string;  // User's name
 
-  @Column()
-
+  
+  @Column({ unique: true })
   email: string;  // User's email
 
   @Column()
@@ -23,7 +24,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.CUSTOMER,
+    default: UserRole.ADMIN,
   })
   role: UserRole;
 
@@ -36,5 +37,7 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.user)
 carts: Cart[];
+@OneToMany(() => UserPermission, (userPermission) => userPermission.user)
+permissions: UserPermission[];
 }
 

@@ -5,8 +5,8 @@ import { Menu } from './entities/menu.entity';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Restaurant } from '../restaurant/entities/restaurant.entity';
-import { UserRole } from '../constants/enums';
-import { AvailabilityStatus } from '../constants/enums';
+import { UserRole } from '../enums';
+import { AvailabilityStatus } from '../enums';
 
 
 @Injectable()

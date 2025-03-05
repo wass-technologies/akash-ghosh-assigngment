@@ -4,8 +4,8 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { JwtAuthGuard } from '../Auth/Gurd/auth.guard';
 import { RolesGuard } from '../Auth/Gurd/roles.guard';
-import { Roles } from '../Auth/Gurd/roles.decorator';
-import { UserRole } from '../constants/enums';
+import { Roles } from '../Auth/decorators/roles.decorator';
+import { UserRole } from '../enums';
 import{UseGuards} from '@nestjs/common';
 
 @Controller('menu')

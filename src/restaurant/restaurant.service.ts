@@ -2,9 +2,9 @@ import { Injectable, NotFoundException,UnauthorizedException } from '@nestjs/com
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
-import { UserRole } from '../constants/enums';
+import { UserRole } from '../enums';
 import { User } from '../user/entities/user.entity';
-import { RestaurantStatus } from '../constants/enums';
+import { RestaurantStatus } from '../enums';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Injectable()

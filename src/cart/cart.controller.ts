@@ -4,8 +4,8 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { JwtAuthGuard } from '../Auth/Gurd/auth.guard';
 import { RolesGuard } from '../Auth/Gurd/roles.guard';
-import { Roles } from '../Auth/Gurd/roles.decorator';
-import { UserRole } from '../constants/enums';
+import { Roles } from '../Auth/decorators/roles.decorator';
+import { UserRole } from '../enums';
 
 @Controller('cart')
 export class CartController {
@@ -26,7 +26,7 @@ export class CartController {
 @Roles(UserRole.CUSTOMER)
 @Get()
 async getCartItems(@Req() req) {
-  console.log("Decoded JWT User:", req.user); 
+  
   const userId = req.user.userId; 
   if (!userId) {
     throw new UnauthorizedException('User ID not found in token');

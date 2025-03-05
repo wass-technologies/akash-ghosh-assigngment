@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { RestaurantStatus } from '../../constants/enums';
+import { RestaurantStatus } from '../../enums';
 
 export class CreateRestaurantDto {
   @IsString()
