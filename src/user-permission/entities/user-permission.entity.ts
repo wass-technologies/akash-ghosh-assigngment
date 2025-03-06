@@ -7,7 +7,7 @@ export class UserPermission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.permissions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.userPermissions, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Permission, { onDelete: 'CASCADE' })

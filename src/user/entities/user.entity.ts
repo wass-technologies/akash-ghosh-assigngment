@@ -37,7 +37,8 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.user)
 carts: Cart[];
+
 @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
-permissions: UserPermission[];
+userPermissions: UserPermission[];
 }
 

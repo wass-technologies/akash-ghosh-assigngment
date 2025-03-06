@@ -2,10 +2,11 @@ import { Injectable, NotFoundException,UnauthorizedException } from '@nestjs/com
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
-import { UserRole } from '../enums';
+import { UserRole,PermissionAction } from '../enums';
 import { User } from '../user/entities/user.entity';
 import { RestaurantStatus } from '../enums';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+
 
 @Injectable()
 export class RestaurantService {
@@ -32,7 +33,6 @@ export class RestaurantService {
     }
 
     return {
-
       id: restaurant.id,
       name: restaurant.name,
       isActive: restaurant.isActive,

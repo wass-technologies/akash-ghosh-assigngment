@@ -5,14 +5,5 @@ import { PermissionsService } from './permissions.service';
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
-  @Post('create')
-  async createPermission(@Body('name') name: string) {
-    return this.permissionsService.createPermission(name);
-  }
-
   
-  @Get()
-  async getPermissions() {
-    return this.permissionsService.getPermissions();
-  }
 }

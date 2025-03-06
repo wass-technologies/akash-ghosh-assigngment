@@ -13,5 +13,6 @@ import { Permission } from 'src/permissions/entities/permission.entity';
   ],
   controllers: [UserPermissionsController],
   providers: [UserPermissionsService],
+  exports:[UserPermissionsService]
 })
 export class UserPermissionsModule {}

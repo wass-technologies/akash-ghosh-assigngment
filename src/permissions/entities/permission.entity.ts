@@ -1,13 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany } from 'typeorm';
+import { PermissionAction } from 'src/enums';
+import { UserPermission } from 'src/user-permission/entities/user-permission.entity';
 
 @Entity('permissions')
 export class Permission {
   @PrimaryGeneratedColumn()
   id: number;
+ 
 
-  @Column({ unique: true })
-  name: string;
+  @Column({ type: 'enum', enum: PermissionAction }) // Removed `unique: true`
+  action: PermissionAction;
 
-  @Column()
-  description: string;
+  @OneToMany(() => UserPermission, (userPermission) => userPermission.permission, {
+    cascade: true, // Ensures permission deletions affect related user permissions
+  })
+  userPermissions: UserPermission[];
 }

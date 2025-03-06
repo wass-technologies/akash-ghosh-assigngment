@@ -2,12 +2,16 @@ import { Controller, Post, Get, Param, Patch, Body,Req } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { Roles } from '../Auth/decorators/roles.decorator';
-import { UserRole } from '../enums';
+import { Permissions } from 'src/Auth/decorators/permissions.decorator';
+import { UserRole ,PermissionAction} from '../enums';
 import { JwtAuthGuard } from '../Auth/Gurd/auth.guard';
 import { RolesGuard } from '../Auth/Gurd/roles.guard';
+import { PermissionsGuard } from 'src/Auth/Gurd/permissions.guard';
 import { UseGuards, Request } from '@nestjs/common';
 import { SetMetadata } from '@nestjs/common';
 import { User } from 'src/user/entities/user.entity';
+import { permission } from 'process';
+
 @Controller('restaurants')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
@@ -36,6 +40,7 @@ async getMenuByRestaurantForAdmin(@Param('restaurantId') restaurantId: number) {
 // actvate by admin
 
   @UseGuards(JwtAuthGuard, RolesGuard)
+ 
   @Roles(UserRole.ADMIN)
   @Patch(':id/activate')
   activateRestaurant(@Param('id') id: number) {
