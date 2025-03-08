@@ -12,6 +12,7 @@ import { User } from 'src/user/entities/user.entity';
 import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
+import { UserPermissionsModule } from 'src/user-permission/user-permission.module';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { RestaurantModule } from 'src/restaurant/restaurant.module';
     UserModule,
     RestaurantModule,
     PassportModule,
+    UserPermissionsModule,
    
     TypeOrmModule.forFeature([User, Restaurant]),
     JwtModule.registerAsync({

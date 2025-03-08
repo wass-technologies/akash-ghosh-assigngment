@@ -20,8 +20,7 @@ export class UserPermissionsController {
   async assignPermission(
     @Req() req,@Body() { userId, permission }: { userId: number; permission: PermissionAction },
   ) {
-    const adminId = req.user.userId; // Get Admin ID from request
-    console.log(req.user.userId);
+    const adminId = req.user.userId; 
     return this.userPermissionsService.assignPermission(adminId, userId, permission);
   }
 }

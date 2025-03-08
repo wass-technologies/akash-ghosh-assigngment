@@ -12,9 +12,11 @@ export class UserService {
     
     private readonly userRepository: Repository<User>, 
   ) {}
-@UseInterceptors(ClassSerializerInterceptor)
   async findByEmail(email: string): Promise<User | undefined> {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations: ['userPermissions', 'userPermissions.permission'], 
+    });
     return user || undefined;
   }
   

@@ -12,7 +12,7 @@ export class Permission {
   action: PermissionAction;
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.permission, {
-    cascade: true, // Ensures permission deletions affect related user permissions
+    cascade: true, 
   })
   userPermissions: UserPermission[];
 }

@@ -10,12 +10,14 @@ import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { RestaurantService } from '../restaurant/restaurant.service'; 
 import { LoginDto } from '../Auth/dto/Login.dto';
 import { UserRole } from 'src/enums';
+import { UserPermissionsService } from 'src/user-permission/user-permission.service';
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
     private restaurantService: RestaurantService,
+    private UserPermissionsService: UserPermissionsService,
     
       @InjectRepository(User) private userRepository: Repository<User>,
       @InjectRepository(Restaurant) private restaurantRepository: Repository<Restaurant>, 
@@ -46,13 +48,17 @@ export class AuthService {
         password: hashedPassword,
         role, // Assign the determined role
       });
+
+     if(role===UserRole.ADMIN){
+      await this.UserPermissionsService.assignAllPermissionsToAdmin(user.id);
+     }
     
       // If user is registering as a restaurant,
       if (createUserDto.role === 'RESATAURANT') {
         await this.restaurantService.create({ 
           name: createUserDto.name, 
           email: createUserDto.email, 
-          owner: user // Link the restaurant with the user
+          owner: user 
         });
       }
     
@@ -61,7 +67,7 @@ export class AuthService {
     
   
 
-    async validateUser(loginDto: LoginDto) {  // ✅ Use DTO here
+    async validateUser(loginDto: LoginDto) {  
       const { email, password } = loginDto;  
     
       const user = await this.userService.findByEmail(email);
@@ -77,9 +83,15 @@ export class AuthService {
       return user; 
     }
     
-
     async login(user: any) {
-      const payload = { sub: user.id, email: user.email, role: user.role };  // ✅ Include role
+      const userData = await this.userService.findByEmail(user.email);
+      if (!userData) {
+        throw new UnauthorizedException('User not found');
+      }
+  // Fetch user permissions from UserPermissionsService
+  const permissions = await this.UserPermissionsService.getUserPermissions(userData.id) || [];
+  
+      const payload = { sub: user.id, email: user.email, role: user.role,  permissions  };
       return {
         access_token: this.jwtService.sign(payload),
       };

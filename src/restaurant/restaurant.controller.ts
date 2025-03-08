@@ -37,13 +37,14 @@ async getMenuByRestaurantForAdmin(@Param('restaurantId') restaurantId: number) {
   return this.restaurantService.getMenuByRestaurantForAdmin(restaurantId);
 }
 
-// actvate by admin
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
- 
-  @Roles(UserRole.ADMIN)
+
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+@Roles(UserRole.ADMIN,UserRole.STAFF) 
+@Permissions(PermissionAction.ACTIVATE_RESTAURANT) 
   @Patch(':id/activate')
   activateRestaurant(@Param('id') id: number) {
+    console.log(id);
     return this.restaurantService.setRestaurantStatus(id, true);
   }
 
